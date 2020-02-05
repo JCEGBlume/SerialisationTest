@@ -5,10 +5,11 @@ using System.Text;
 namespace SerialisationTest
 {
     [Serializable]
-    class Daten
+    public class Daten
     {
         public string text;
 
+        public Daten() { }
         public Daten(string text)
         {
             this.text = text;
