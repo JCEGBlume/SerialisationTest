@@ -7,7 +7,6 @@ namespace SerialisationTest
 {
     class Program
     {
-
         static void Main(string[] args)
         {
             Console.WriteLine("--- XML ---");
