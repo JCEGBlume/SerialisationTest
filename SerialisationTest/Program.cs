@@ -7,49 +7,78 @@ namespace SerialisationTest
 {
     class Program
     {
+
         static void Main(string[] args)
         {
-
             Console.WriteLine("--- XML ---");
             string filePathXml = "test.xml";
+
             Console.Write("Input: ");
             string input = Console.ReadLine();
-
             Daten daten = new Daten(input);
 
-            FileStream fileStreamXml = new FileStream(filePathXml, FileMode.OpenOrCreate);
-            XmlSerializer xmlf = new XmlSerializer(typeof(Daten));
-            //TODO: probleme wenn datei bereits existiert, manchmal
-            xmlf.Serialize(fileStreamXml, daten);
-            Console.WriteLine("Serialisiert als XML: " + filePathXml);
-            fileStreamXml.Close();
+            SerializeXml(daten, filePathXml);
+            daten = DeserializeXml(filePathXml);
 
-            FileStream fileStreamXmlRead = new FileStream(filePathXml, FileMode.Open);
-            Daten datenRead = (Daten)xmlf.Deserialize(fileStreamXmlRead);
-            fileStreamXmlRead.Close();
+            Console.WriteLine("Deserialisiert: " + daten.text);
 
-            Console.WriteLine("Deserialisiert: " + datenRead.text);
 
 
             Console.WriteLine("--- Binär ---");
             string filePathBin = "test.bin";
+
             Console.Write("Input: ");
             string inputBin = Console.ReadLine();
-
             Daten datenBin = new Daten(inputBin);
 
-            FileStream fileStreamBin = new FileStream(filePathBin, FileMode.OpenOrCreate);
-            BinaryFormatter bf = new BinaryFormatter();
-            bf.Serialize(fileStreamBin, datenBin);
-            Console.WriteLine("Serialisiert als Binärdatei: " + filePathBin);
-            fileStreamBin.Close();
+            SerializeBinary(datenBin, filePathBin);
+            datenBin = DeserializeBinary(filePathBin);
 
-            FileStream fileStreamBinRead = new FileStream(filePathBin, FileMode.Open);
-            Daten datenBinRead = (Daten)bf.Deserialize(fileStreamBinRead);
-            Console.WriteLine("Deserialisiert: " + datenBinRead.text);
+            Console.WriteLine("Deserialisiert: " + datenBin.text);
+
+
 
             Console.WriteLine("Any key to close.");
             Console.ReadLine();
+        }
+
+        private static void SerializeXml(Daten daten, string filePath)
+        {
+            FileStream fileStream = new FileStream(filePath, FileMode.OpenOrCreate);
+            XmlSerializer xmlf = new XmlSerializer(typeof(Daten));
+            //TODO: probleme wenn datei bereits existiert, manchmal
+            xmlf.Serialize(fileStream, daten);
+            Console.WriteLine("Serialisiert als XML: " + filePath);
+            fileStream.Close();
+        }
+
+        private static Daten DeserializeXml(string filePath)
+        {
+            FileStream fileStream = new FileStream(filePath, FileMode.Open);
+            XmlSerializer xmlf = new XmlSerializer(typeof(Daten));
+            Daten daten = (Daten)xmlf.Deserialize(fileStream);
+            fileStream.Close();
+
+            return daten;
+        }
+
+        private static void SerializeBinary(Daten daten, string filePath)
+        {
+            FileStream fileStream = new FileStream(filePath, FileMode.OpenOrCreate);
+            BinaryFormatter bf = new BinaryFormatter();
+            bf.Serialize(fileStream, daten);
+            Console.WriteLine("Serialisiert als Binärdatei: " + filePath);
+            fileStream.Close();
+        }
+
+        private static Daten DeserializeBinary(string filePath)
+        {
+            FileStream fileStream = new FileStream(filePath, FileMode.Open);
+            BinaryFormatter bf = new BinaryFormatter();
+            Daten daten = (Daten)bf.Deserialize(fileStream);
+            fileStream.Close();
+
+            return daten;
         }
     }
 }
